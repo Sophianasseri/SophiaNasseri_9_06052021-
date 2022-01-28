@@ -19,16 +19,7 @@ describe("Given I am connected as an employee", () => {
       test("Then A new bill should be created and Bills page should be rendered", () => {
         const html = NewBillUI()
       document.body.innerHTML = html
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      window.localStorage.setItem('user', JSON.stringify({
-        type: 'Employee'
-      }))
-      const newBill = new NewBill({
-        document, onNavigate, store: null, bills, localStorage: window.localStorage
-      }) 
+
         const expenseTypeInput = screen.getByTestId('expense-type');
         fireEvent.change(expenseTypeInput, {target: { value: 'Transports'}});
         expect(expenseTypeInput.value).toBe('Transports')
@@ -53,7 +44,14 @@ describe("Given I am connected as an employee", () => {
         fireEvent.change(pctInput, {target: { value: '20'}});
         expect(pctInput.value).toBe('20')
 
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+        const form = screen.getByTestId("form-new-bill");
         const handleSubmit  = jest.fn(newBill.handleSubmit)
+        form.addEventListener("submit", handleSubmit);
+      fireEvent.submit(form);
+      expect(handleSubmit).toHaveBeenCalled();
 
 
       })
