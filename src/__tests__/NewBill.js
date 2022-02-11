@@ -5,7 +5,7 @@ import NewBill from "../containers/NewBill.js"
 import { ROUTES } from "../constants/routes"
 import { localStorageMock } from "../__mocks__/localStorage.js"
 import store from "../__mocks__/store"
-import { bills } from "../fixtures/bills.js"
+
 
 
 describe("Given I am connected as an employee", () => {
@@ -44,15 +44,49 @@ describe("Given I am connected as an employee", () => {
         fireEvent.change(pctInput, {target: { value: '20'}});
         expect(pctInput.value).toBe('20')
 
+        Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee'
+        }))
+
         const onNavigate = (pathname) => {
           document.body.innerHTML = ROUTES({ pathname });
         };
+        const newBill = new NewBill({
+          document, onNavigate, store: null, localStorage: window.localStorage
+        })
         const form = screen.getByTestId("form-new-bill");
-        const handleSubmit  = jest.fn(newBill.handleSubmit)
+        const handleSubmit = jest.fn((e) => newBill.handleSubmit(e))
         form.addEventListener("submit", handleSubmit);
       fireEvent.submit(form);
       expect(handleSubmit).toHaveBeenCalled();
+      expect(screen.getByTestId('btn-new-bill')).toBeTruthy()
+      })
+    })
+    describe('Given I added an image file in the file input', () => {
+      test('Then the file should have been changed in the file input', () =>{
+        const html = NewBillUI()
+      document.body.innerHTML = html
 
+      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
+        window.localStorage.setItem('user', JSON.stringify({
+          type: 'Employee'
+        }))
+
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+        const newBill = new NewBill({
+          document, onNavigate, store: null, localStorage: window.localStorage
+        })
+
+        const fileInput = screen.getByTestId("file");
+        const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
+        fileInput.addEventListener("change", handleChangeFile);
+        fireEvent.change(fileInput);
+        const file = new File(["image.png"], "image.png", {type: "image/png"})
+        expect(handleChangeFile).toHaveBeenCalled()
+        
 
       })
     })
