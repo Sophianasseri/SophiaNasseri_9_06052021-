@@ -11,6 +11,7 @@ import mockStore from "../__mocks__/store"
 import { bills } from "../fixtures/bills.js"
 import router from "../app/Router.js"
 
+jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -148,7 +149,7 @@ describe("Given I am a user connected as Employee", () => {
             return Promise.reject(new Error("Erreur 404"))
           }
         }})
-      window.onNavigate(ROUTES_PATH.Dashboard)
+      window.onNavigate(ROUTES_PATH.Bills)
       await new Promise(process.nextTick);
       const message = screen.getByText(/Erreur 404/)
       expect(message).toBeTruthy()
@@ -163,7 +164,7 @@ describe("Given I am a user connected as Employee", () => {
           }
         }})
 
-      window.onNavigate(ROUTES_PATH.Dashboard)
+      window.onNavigate(ROUTES_PATH.Bills)
       await new Promise(process.nextTick);
       const message = screen.getByText(/Erreur 500/)
       expect(message).toBeTruthy()
