@@ -1,20 +1,20 @@
-import { fireEvent, screen } from "@testing-library/dom"
+import { fireEvent, screen, waitFor } from "@testing-library/dom"
 import userEvent from '@testing-library/user-event'
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
-import { ROUTES } from "../constants/routes"
+import { ROUTES, ROUTES_PATH } from "../constants/routes"
 import { localStorageMock } from "../__mocks__/localStorage.js"
-import store from "../__mocks__/store"
+import mockStore from "../__mocks__/store"
+import router from "../app/Router.js"
+
+
+
+jest.mock("../app/store", () => mockStore)
 
 
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
-    test("Then ...", () => {
-      const html = NewBillUI()
-      document.body.innerHTML = html
-      //to-do write assertion
-    })
     describe("Given all fields are filled correctly and I click on submit button", () => {
       test("Then A new bill should be created and Bills page should be rendered", () => {
         const html = NewBillUI()
@@ -60,7 +60,7 @@ describe("Given I am connected as an employee", () => {
         form.addEventListener("submit", handleSubmit);
       fireEvent.submit(form);
       expect(handleSubmit).toHaveBeenCalled();
-      expect(screen.getByTestId('btn-new-bill')).toBeTruthy()
+      expect(screen.getByText('Mes notes de frais')).toBeTruthy()
       })
     })
     describe('Given I added an image file in the file input', () => {
@@ -81,14 +81,33 @@ describe("Given I am connected as an employee", () => {
         })
 
         const fileInput = screen.getByTestId("file");
+        const file = new File(["image.png"], "image.png", {type: "image/png"})
         const handleChangeFile = jest.fn((e) => newBill.handleChangeFile(e))
         fileInput.addEventListener("change", handleChangeFile);
-        fireEvent.change(fileInput);
-        const file = new File(["image.png"], "image.png", {type: "image/png"})
+        userEvent.upload(fileInput, file)
+        
+
         expect(handleChangeFile).toHaveBeenCalled()
+        expect(screen.getByTestId("file").files[0].name).not.toBeNull()
         
 
       })
     })
+  })
+})
+
+// test d'intégration POST
+describe("Given I am a user connected as Employee", () => {
+  describe("When I create a new bill", () => {
+    test("Then it should add a bill from mock API POST", async () => {
+      localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "e@e" }));
+      const root = document.createElement("div")
+      root.setAttribute("id", "root")
+      document.body.append(root)
+      router()
+      window.onNavigate(ROUTES_PATH.NewBill)
+      jest.spyOn(mockStore, "bills") 
+    })
+
   })
 })
