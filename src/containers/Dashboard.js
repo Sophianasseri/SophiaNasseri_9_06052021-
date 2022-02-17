@@ -144,15 +144,8 @@ export default class {
         .html("")
       this.counter ++
     }
-
-    bills.forEach(bill => {
-      if(document.getElementById(`open-bill${bill.id}`)){
-        const events = $._data(document.getElementById(`open-bill${bill.id}`),'events')
-        if(!events){
-          $(`#open-bill${bill.id}`).on('click', (e) => this.handleEditTicket(e, bill, bills))
-        }
-      }
-      
+      bills.forEach(bill => {
+      $(`#status-bills-container${this.index}`).find(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
 
     return bills
