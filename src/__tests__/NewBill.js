@@ -6,7 +6,7 @@ import { ROUTES, ROUTES_PATH } from "../constants/routes"
 import { localStorageMock } from "../__mocks__/localStorage.js"
 import mockStore from "../__mocks__/store"
 import router from "../app/Router.js"
-
+import BillsUI from "../views/BillsUI.js"
 
 
 jest.mock("../app/store", () => mockStore)
@@ -128,7 +128,7 @@ describe("Given I am a user connected as Employee", () => {
         document.body.appendChild(root)
         router()
       })
-      test("fetches bills from an API and fails with 404 message error", async () => {
+      test("It should fail with 404 message error", async () => {
   
         mockStore.bills.mockImplementationOnce(() => {
           return {
@@ -136,13 +136,15 @@ describe("Given I am a user connected as Employee", () => {
               return Promise.reject(new Error("Erreur 404"))
             }
           }})
-        window.onNavigate(ROUTES_PATH.Bills)
+        window.onNavigate(ROUTES_PATH.NewBill)
         await new Promise(process.nextTick);
+        const html = BillsUI({ error: "Erreur 404" })
+        document.body.innerHTML = html
         const message = screen.getByText(/Erreur 404/)
         expect(message).toBeTruthy()
       })
   
-      test("fetches messages from an API and fails with 500 message error", async () => {
+      test("It should fail with 500 message error", async () => {
   
         mockStore.bills.mockImplementationOnce(() => {
           return {
@@ -151,8 +153,10 @@ describe("Given I am a user connected as Employee", () => {
             }
           }})
   
-        window.onNavigate(ROUTES_PATH.Bills)
+        window.onNavigate(ROUTES_PATH.NewBill)
         await new Promise(process.nextTick);
+        const html = BillsUI({ error: "Erreur 500" })
+        document.body.innerHTML = html
         const message = screen.getByText(/Erreur 500/)
         expect(message).toBeTruthy()
       })
