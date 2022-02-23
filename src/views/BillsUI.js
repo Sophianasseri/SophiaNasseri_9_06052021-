@@ -1,7 +1,6 @@
 import VerticalLayout from './VerticalLayout.js'
 import ErrorPage from "./ErrorPage.js"
 import LoadingPage from "./LoadingPage.js"
-import { formatDate } from "../app/format.js"
 
 import Actions from './Actions.js'
 
@@ -25,7 +24,6 @@ const rows = (data) => {
     const filteredData = data.filter(bill => bill.date != null)
     
     filteredData.sort((a, b) => ((a.date < b.date) ? 1 : -1))
-     console.log(data);
      return (filteredData && filteredData.length) ? filteredData.map(bill => row(bill)).join("") : ""
   }
 }

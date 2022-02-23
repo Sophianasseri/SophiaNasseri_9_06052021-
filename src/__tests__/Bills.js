@@ -40,7 +40,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
   })
-  describe('When I click on New Bill button', () => {
+  describe('When I click on "Nouvelle note de frais" button', () => {
     test('Then I should see New Bill form', () => {
       
       const onNavigate = (pathname) => {
@@ -66,23 +66,28 @@ describe("Given I am connected as an employee", () => {
     })
   })
   describe('When I click on the icon eye', () => {
-    test('A modal should open', () => {
+    test('Then a modal should open', () => {
+
+      $.fn.modal = jest.fn(() => $());
+
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
       }))
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
+
       const onNavigate = (pathname) => {
         document.body.innerHTML = ROUTES({ pathname })
       }
       const store = null
+      
       const bill = new Bills({
         document, onNavigate, store, bills, localStorage: window.localStorage
       })
 
-      const handleClickIconEye = jest.fn(bill.handleClickIconEye)
       const eyes = screen.getAllByTestId('icon-eye')
+      const handleClickIconEye = jest.fn(bill.handleClickIconEye)
       eyes.forEach((eye) => {
         eye.addEventListener('click', handleClickIconEye)
         userEvent.click(eye)
@@ -91,7 +96,6 @@ describe("Given I am connected as an employee", () => {
 
       const modale = screen.getByTestId('modaleFile')
       expect(modale).toBeTruthy()
-      expect(screen.getByText("Justificatif")).toBeTruthy()
     })
   })
   describe('When I am on Bills page but it is loading', () => {

@@ -1,12 +1,11 @@
-import { fireEvent, screen, waitFor } from "@testing-library/dom"
+import { fireEvent, screen} from "@testing-library/dom"
 import userEvent from '@testing-library/user-event'
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
-import { ROUTES, ROUTES_PATH } from "../constants/routes"
+import { ROUTES} from "../constants/routes"
 import { localStorageMock } from "../__mocks__/localStorage.js"
 import mockStore from "../__mocks__/store"
-import router from "../app/Router.js"
-import BillsUI from "../views/BillsUI.js"
+
 
 
 jest.mock("../app/store", () => mockStore)
@@ -16,7 +15,7 @@ jest.mock("../app/store", () => mockStore)
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     describe("Given all fields are filled correctly and I click on submit button", () => {
-      test("Then A new bill should be created and Bills page should be rendered", () => {
+      test("Then A new bill should be submitted and Bills page should be rendered", () => {
         const html = NewBillUI()
       document.body.innerHTML = html
 
@@ -98,8 +97,8 @@ describe("Given I am connected as an employee", () => {
 
 // test d'intégration POST
 describe("Given I am a user connected as Employee", () => {
-  describe("When I create a new bill", () => {
-    test("Then it should add a bill to mock API POST", async () => {
+  describe("When a new bill is created", () => {
+    test("Then Bills page should be rendered", async () => {
       const spy = jest.spyOn(mockStore.bills(), "update")
 
       localStorage.setItem("user", JSON.stringify({ type: "Employee", email: "e@e" }));
