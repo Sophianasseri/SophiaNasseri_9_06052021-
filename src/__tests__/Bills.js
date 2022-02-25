@@ -89,7 +89,7 @@ describe("Given I am connected as an employee", () => {
       const eyes = screen.getAllByTestId('icon-eye')
       const handleClickIconEye = jest.fn(bill.handleClickIconEye)
       eyes.forEach((eye) => {
-        eye.addEventListener('click', handleClickIconEye)
+        eye.addEventListener('click', () => {handleClickIconEye(eye)})
         userEvent.click(eye)
       })
       expect(handleClickIconEye).toHaveBeenCalled()
